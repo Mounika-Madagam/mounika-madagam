@@ -1,16 +1,21 @@
-## Hi there 👋
+ Hi, I'm Mounika 👋
 
-<!--
-**Mounika-Madagam/mounika-madagam** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Aspiring Machine Learning Engineer | Data Scientist
 
-Here are some ideas to get you started:
+I'm transitioning into AI/ML engineering, with a strong foundation in:
+- 🧠 Machine Learning (scikit-learn, XGBoost, classification, clustering)
+- 🐍 Python & Pandas for data analysis
+- 🗄️ Advanced SQL (5+ years professional experience)
+- 📊 Data Visualization (Power BI, Tableau, Matplotlib)
+- 🤖 Familiar with LLMs, LangChain, and RAG concepts
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+Background
+I bring 5+ years of customer data and analytics experience from Salesforce Marketing Cloud roles at DIRECTV and Pfizer — including SQL-driven segmentation, A/B testing, attribution modeling, and Einstein Analytics. I'm applying that domain expertise to ML problems in customer analytics and marketing.
+
+Current Focus
+- 🔭 Building ML projects in customer analytics
+- 🌱 Learning deep learning fundamentals and LLM application development
+- 💡 Open to entry-level Data Scientist and ML Engineer roles
+Reach Me
+- 📧 mrmadagam@gmail.com
+- 💼 [LinkedIn](https://linkedin.com/in/mounika-m-b90344230)
