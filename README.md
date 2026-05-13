@@ -18,4 +18,4 @@ Current Focus
 - 💡 Open to entry-level Data Scientist and ML Engineer roles
 Reach Me
 - 📧 mrmadagam@gmail.com
-- 💼 [LinkedIn](https://linkedin.com/in/mounika-m-b90344230)
+- 💼 [LinkedIn](linkedin.com/in/mounika-reddy-b90344230)
