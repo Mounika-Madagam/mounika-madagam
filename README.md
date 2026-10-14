@@ -17,9 +17,8 @@ I also build hands-on Python and machine learning projects focused on customer b
 
 ## Featured projects
 
-### [Marketing Campaign Segmentation & QC Automation](portfolio-projects/marketing-campaign-segmentation-qc/README.md)
-A complete, locally runnable SQL + Python portfolio project with deterministic test/control cohorts, sequential eligibility waterfall, independent quality checks, and synthetic customer data. [View project code](portfolio-projects/marketing-campaign-segmentation-qc/).
-
+### [Marketing Campaign Segmentation & QC](https://github.com/Mounika-Madagam/marketing-campaign-segmentation-qc)
+A runnable Python and SQL project that takes synthetic customer data through campaign eligibility filters, assigns test and control groups, and checks audience integrity before releasing exports. Includes a sequential waterfall report and automated regression tests.
 
 ### [Customer Churn Prediction](https://github.com/Mounika-Madagam/customer-churn-prediction)
 Built and compared Logistic Regression, Random Forest, and XGBoost models on the public IBM Telco customer dataset (7,043 records). **Best reported ROC-AUC: 0.846**.
