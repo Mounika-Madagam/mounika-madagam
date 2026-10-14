@@ -17,16 +17,18 @@ I also build hands-on Python and machine learning projects focused on customer b
 
 ## Featured projects
 
-### [Marketing Campaign Segmentation & QC](https://github.com/Mounika-Madagam/marketing-campaign-segmentation-qc)
+These are independent portfolio projects built with public or synthetic data. The source repositories are private; access is available upon request.
+
+### Marketing Campaign Segmentation & QC
 A runnable Python and SQL project that takes synthetic customer data through campaign eligibility filters, assigns test and control groups, and checks audience integrity before releasing exports. Includes a sequential waterfall report and automated regression tests.
 
-### [Customer Churn Prediction](https://github.com/Mounika-Madagam/customer-churn-prediction)
+### Customer Churn Prediction
 Built and compared Logistic Regression, Random Forest, and XGBoost models on the public IBM Telco customer dataset (7,043 records). **Best reported ROC-AUC: 0.846**.
 
-### [Customer Segmentation](https://github.com/Mounika-Madagam/customer-segmentation)
+### Customer Segmentation
 Used K-Means clustering to explore purchasing behaviors and develop five interpretable customer segments with corresponding marketing recommendations.
 
-### [Ad Campaign Performance Analysis](https://github.com/Mounika-Madagam/ad-campaign-performance-predictor)
+### Ad Campaign Performance Analysis
 Explored digital advertising performance and compared conversion classification models using a public campaign dataset. Includes performance metrics, model evaluation, and an observational audience comparison.
 
 ## What I focus on
