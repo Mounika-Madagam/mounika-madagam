@@ -1,7 +1,7 @@
 # Portfolio projects
 
-The campaign segmentation and QC implementation is maintained in its own repository:
+The projects below are maintained in private repositories. I can share access with recruiters and collaborators on request.
 
-- [Marketing Campaign Segmentation & QC](https://github.com/Mounika-Madagam/marketing-campaign-segmentation-qc) — SQL segmentation, deterministic test/control allocation, waterfall reporting, and automated QC using synthetic data.
+**Marketing Campaign Segmentation & QC** — A Python and SQL example of campaign eligibility, test/control allocation, waterfall reporting, and QC checks built around synthetic customer data.
 
-My GitHub [profile README](../README.md) links to this and my other machine learning projects.
+For summaries of my other analytics and machine learning projects, see my [GitHub profile](../README.md).
