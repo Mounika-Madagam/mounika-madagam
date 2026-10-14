@@ -1,3 +1,7 @@
 # Portfolio projects
 
-- **[Marketing Campaign Segmentation & QC Automation](marketing-campaign-segmentation-qc/README.md)** — Runnable synthetic customer segmentation, sequential SQL waterfall, test/control holdout allocation, automatic data quality audits, and export safeguards.
+The campaign segmentation and QC implementation is maintained in its own repository:
+
+- [Marketing Campaign Segmentation & QC](https://github.com/Mounika-Madagam/marketing-campaign-segmentation-qc) — SQL segmentation, deterministic test/control allocation, waterfall reporting, and automated QC using synthetic data.
+
+My GitHub [profile README](../README.md) links to this and my other machine learning projects.
