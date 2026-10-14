@@ -1,32 +1,41 @@
 # Hi, I'm Mounika 👋
 
-**Machine Learning & Data Science | Customer Analytics**
+### Marketing Automation Developer | Customer Analytics | Applied Machine Learning
 
-I'm transitioning into AI/ML engineering, with a strong foundation in:
+I work at the intersection of **marketing technology, customer data, and analytics**. My background includes Salesforce Marketing Cloud development, SQL-based audience segmentation, campaign automation, quality assurance, and translating business requirements into reliable marketing solutions.
 
-- 🧠 Machine Learning: scikit-learn, XGBoost, classification, clustering
-- 🐍 Python & Pandas for data analysis
-- 🗄️ Advanced SQL on large customer datasets
-- 📊 Data Visualization: Power BI, Tableau, Matplotlib
-- 🤖 Working knowledge of LLMs, LangChain, and RAG
+I also build hands-on Python and machine learning projects focused on customer behavior, retention, and campaign performance. My goal is to connect practical marketing domain knowledge with thoughtful, measurable data science.
 
-## Projects
+## Technical toolkit
 
-- [Customer Churn Prediction](https://github.com/Mounika-Madagam/customer-churn-prediction) — XGBoost on 7,043 telecom customers, 0.846 ROC-AUC
-- [Customer Segmentation](https://github.com/Mounika-Madagam/customer-segmentation) — K-Means clustering, 5 customer personas with marketing strategies
-- [Ad Campaign Performance Predictor](https://github.com/Mounika-Madagam/ad-campaign-performance-predictor) — conversion modeling on 1,143 Facebook ad campaigns, with a statistical A/B test
+| Area | Tools & skills |
+| --- | --- |
+| Marketing technology | Salesforce Marketing Cloud, audience segmentation, automation workflows, campaign QA |
+| Data & programming | SQL, Python, pandas, NumPy, data preparation |
+| Applied machine learning | scikit-learn, XGBoost, classification, clustering, model evaluation |
+| Analytics & visualization | Campaign performance analysis, Matplotlib, Seaborn, statistical analysis |
 
-## Background
+## Featured projects
 
-Customer data and analytics experience from Salesforce Marketing Cloud work at DIRECTV and Pfizer, including SQL-driven segmentation, A/B testing, attribution modeling, and Einstein Analytics. I'm now applying that domain expertise to ML problems in customer analytics and marketing.
+### [Customer Churn Prediction](https://github.com/Mounika-Madagam/customer-churn-prediction)
+Built and compared Logistic Regression, Random Forest, and XGBoost models on the public IBM Telco customer dataset (7,043 records). **Best reported ROC-AUC: 0.846**.
 
-## Current Focus
+### [Customer Segmentation](https://github.com/Mounika-Madagam/customer-segmentation)
+Used K-Means clustering to explore purchasing behaviors and develop five interpretable customer segments with corresponding marketing recommendations.
 
-- 🔭 Building ML projects in customer analytics
-- 🌱 Learning deep learning fundamentals and LLM application development
-- 💡 Open to entry-level Data Scientist and ML Engineer roles
+### [Ad Campaign Performance Analysis](https://github.com/Mounika-Madagam/ad-campaign-performance-predictor)
+Explored digital advertising performance and compared conversion classification models using a public campaign dataset. Includes performance metrics, model evaluation, and an observational audience comparison.
 
-## Reach Me
+## What I focus on
 
-- 📧 mrmadagam@gmail.com
-- 💼 [LinkedIn](https://www.linkedin.com/in/mounika-reddy-b90344230)
+- Building accurate, maintainable data and campaign workflows
+- Translating customer data into actionable insights
+- Learning and applying machine learning to real business questions
+- Communicating results clearly, including model limitations
+
+## Connect
+
+- [LinkedIn](https://www.linkedin.com/in/mounika-reddy-b90344230)
+- **Email:** mrmadagam@gmail.com
+
+*The machine learning projects here are independent portfolio work using public datasets; they do not contain employer or customer production data.*
