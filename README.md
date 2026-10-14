@@ -1,6 +1,6 @@
 # Hi, I'm Mounika 👋
 
-### Marketing Automation Developer | Customer Analytics | Applied Machine Learning
+### Salesforce Marketing Cloud Developer | SQL, Python & Customer Analytics | Applied Machine Learning
 
 I work at the intersection of **marketing technology, customer data, and analytics**. My background includes Salesforce Marketing Cloud development, SQL-based audience segmentation, campaign automation, quality assurance, and translating business requirements into reliable marketing solutions.
 
