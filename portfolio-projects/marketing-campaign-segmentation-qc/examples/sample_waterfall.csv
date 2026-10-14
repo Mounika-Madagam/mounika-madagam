@@ -1,0 +1,12 @@
+step,stage,remaining,excluded_at_step
+0,Starting population,3000,0
+1,Active accounts,2719,281
+2,Eligible product,2314,405
+3,Allowed country,2110,204
+4,Marketing consent,1877,233
+5,Valid email,1768,109
+6,Employee exclusion,1692,76
+7,Legacy subscriber exclusion,1554,138
+8,Promotional exclusion,1468,86
+9,Contact frequency cap,1164,304
+10,Minimum account age,1148,16
