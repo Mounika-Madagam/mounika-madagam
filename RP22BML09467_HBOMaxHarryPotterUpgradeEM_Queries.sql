@@ -130,47 +130,47 @@ FROM [RP22BML09467_HBOMaxHarryPotterUpgradeEM_Inclusion] i
 /* ==========================================================================
    STEP 4 - SEGMENTS
    Target DE : RP22BML09467_HBOMaxHarryPotterUpgradeEM_Segments
-   CONTROL_FLAG: Test = 'N', Control (holdout) = 'Y'
+   HOLDOUT_FLAG: Test = N, Control (holdout) = Y
    ========================================================================== */
 SELECT
      U.ACCT_KEY
     ,U.INPUT_SOURCE
-    ,U.CONTROL_FLAG
+    ,U.HOLDOUT_FLAG
     ,U.RANDOM_ID
     ,U.PERCENTILE
     ,CASE
-        WHEN U.INPUT_SOURCE = 'DTVSAT'     AND U.CONTROL_FLAG = 'N' THEN 'S000000010'
-        WHEN U.INPUT_SOURCE = 'DTVSAT'     AND U.CONTROL_FLAG = 'Y' THEN 'S100000010'
-        WHEN U.INPUT_SOURCE = 'DTVI'       AND U.CONTROL_FLAG = 'N' THEN 'S000000020'
-        WHEN U.INPUT_SOURCE = 'DTVI'       AND U.CONTROL_FLAG = 'Y' THEN 'S100000020'
-        WHEN U.INPUT_SOURCE = 'BYOD'       AND U.CONTROL_FLAG = 'N' THEN 'S000000030'
-        WHEN U.INPUT_SOURCE = 'BYOD'       AND U.CONTROL_FLAG = 'Y' THEN 'S100000030'
-        WHEN U.INPUT_SOURCE = 'UVERSE'     AND U.CONTROL_FLAG = 'N' THEN 'S000000040'
-        WHEN U.INPUT_SOURCE = 'UVERSE'     AND U.CONTROL_FLAG = 'Y' THEN 'S100000040'
-        WHEN U.INPUT_SOURCE = 'GENRE_DTVI' AND U.CONTROL_FLAG = 'N' THEN 'S000000050'
-        WHEN U.INPUT_SOURCE = 'GENRE_DTVI' AND U.CONTROL_FLAG = 'Y' THEN 'S100000050'
-        WHEN U.INPUT_SOURCE = 'GENRE_BYOD' AND U.CONTROL_FLAG = 'N' THEN 'S000000060'
-        WHEN U.INPUT_SOURCE = 'GENRE_BYOD' AND U.CONTROL_FLAG = 'Y' THEN 'S100000060'
+        WHEN U.INPUT_SOURCE = 'DTVSAT'     AND U.HOLDOUT_FLAG = 'N' THEN 'S000000010'
+        WHEN U.INPUT_SOURCE = 'DTVSAT'     AND U.HOLDOUT_FLAG = 'Y' THEN 'S100000010'
+        WHEN U.INPUT_SOURCE = 'DTVI'       AND U.HOLDOUT_FLAG = 'N' THEN 'S000000020'
+        WHEN U.INPUT_SOURCE = 'DTVI'       AND U.HOLDOUT_FLAG = 'Y' THEN 'S100000020'
+        WHEN U.INPUT_SOURCE = 'BYOD'       AND U.HOLDOUT_FLAG = 'N' THEN 'S000000030'
+        WHEN U.INPUT_SOURCE = 'BYOD'       AND U.HOLDOUT_FLAG = 'Y' THEN 'S100000030'
+        WHEN U.INPUT_SOURCE = 'UVERSE'     AND U.HOLDOUT_FLAG = 'N' THEN 'S000000040'
+        WHEN U.INPUT_SOURCE = 'UVERSE'     AND U.HOLDOUT_FLAG = 'Y' THEN 'S100000040'
+        WHEN U.INPUT_SOURCE = 'GENRE_DTVI' AND U.HOLDOUT_FLAG = 'N' THEN 'S000000050'
+        WHEN U.INPUT_SOURCE = 'GENRE_DTVI' AND U.HOLDOUT_FLAG = 'Y' THEN 'S100000050'
+        WHEN U.INPUT_SOURCE = 'GENRE_BYOD' AND U.HOLDOUT_FLAG = 'N' THEN 'S000000060'
+        WHEN U.INPUT_SOURCE = 'GENRE_BYOD' AND U.HOLDOUT_FLAG = 'Y' THEN 'S100000060'
      END AS CELL_CODE
     ,CASE
-        WHEN U.INPUT_SOURCE = 'DTVSAT'     AND U.CONTROL_FLAG = 'N' THEN 'DTVs Test'
-        WHEN U.INPUT_SOURCE = 'DTVSAT'     AND U.CONTROL_FLAG = 'Y' THEN 'DTVs Control'
-        WHEN U.INPUT_SOURCE = 'DTVI'       AND U.CONTROL_FLAG = 'N' THEN 'DTVi Test'
-        WHEN U.INPUT_SOURCE = 'DTVI'       AND U.CONTROL_FLAG = 'Y' THEN 'DTVi Control'
-        WHEN U.INPUT_SOURCE = 'BYOD'       AND U.CONTROL_FLAG = 'N' THEN 'BYOD Test'
-        WHEN U.INPUT_SOURCE = 'BYOD'       AND U.CONTROL_FLAG = 'Y' THEN 'BYOD Control'
-        WHEN U.INPUT_SOURCE = 'UVERSE'     AND U.CONTROL_FLAG = 'N' THEN 'U Verse Test'
-        WHEN U.INPUT_SOURCE = 'UVERSE'     AND U.CONTROL_FLAG = 'Y' THEN 'U Verse Control'
-        WHEN U.INPUT_SOURCE = 'GENRE_DTVI' AND U.CONTROL_FLAG = 'N' THEN 'Genre-DTVi Test'
-        WHEN U.INPUT_SOURCE = 'GENRE_DTVI' AND U.CONTROL_FLAG = 'Y' THEN 'Genre-DTVi Control'
-        WHEN U.INPUT_SOURCE = 'GENRE_BYOD' AND U.CONTROL_FLAG = 'N' THEN 'Genre-BYOD Test'
-        WHEN U.INPUT_SOURCE = 'GENRE_BYOD' AND U.CONTROL_FLAG = 'Y' THEN 'Genre-BYOD Control'
+        WHEN U.INPUT_SOURCE = 'DTVSAT'     AND U.HOLDOUT_FLAG = 'N' THEN 'DTVs Test'
+        WHEN U.INPUT_SOURCE = 'DTVSAT'     AND U.HOLDOUT_FLAG = 'Y' THEN 'DTVs Control'
+        WHEN U.INPUT_SOURCE = 'DTVI'       AND U.HOLDOUT_FLAG = 'N' THEN 'DTVi Test'
+        WHEN U.INPUT_SOURCE = 'DTVI'       AND U.HOLDOUT_FLAG = 'Y' THEN 'DTVi Control'
+        WHEN U.INPUT_SOURCE = 'BYOD'       AND U.HOLDOUT_FLAG = 'N' THEN 'BYOD Test'
+        WHEN U.INPUT_SOURCE = 'BYOD'       AND U.HOLDOUT_FLAG = 'Y' THEN 'BYOD Control'
+        WHEN U.INPUT_SOURCE = 'UVERSE'     AND U.HOLDOUT_FLAG = 'N' THEN 'U Verse Test'
+        WHEN U.INPUT_SOURCE = 'UVERSE'     AND U.HOLDOUT_FLAG = 'Y' THEN 'U Verse Control'
+        WHEN U.INPUT_SOURCE = 'GENRE_DTVI' AND U.HOLDOUT_FLAG = 'N' THEN 'Genre-DTVi Test'
+        WHEN U.INPUT_SOURCE = 'GENRE_DTVI' AND U.HOLDOUT_FLAG = 'Y' THEN 'Genre-DTVi Control'
+        WHEN U.INPUT_SOURCE = 'GENRE_BYOD' AND U.HOLDOUT_FLAG = 'N' THEN 'Genre-BYOD Test'
+        WHEN U.INPUT_SOURCE = 'GENRE_BYOD' AND U.HOLDOUT_FLAG = 'Y' THEN 'Genre-BYOD Control'
      END AS CELL_NAME
     ,U.VENDOR_CODE
 FROM (
         SELECT i.ACCT_KEY
               ,i.INPUT_SOURCE
-              ,i.HOLDOUT_FLAG AS CONTROL_FLAG
+              ,i.HOLDOUT_FLAG
               ,'SFMC' AS VENDOR_CODE
               ,i.RANDOM_ID
               ,ntile(100) OVER (PARTITION BY i.Input_Source ORDER BY i.RANDOM_ID) AS PERCENTILE
@@ -210,7 +210,7 @@ join [RP22BML09467_HBOMaxHarryPotterUpgradeEM_CampaignDetails] cd on cd.INTAKE_I
 left join [P_A_EV_AGN_AllCustomers_Identity] aci on i.ACCT_KEY = aci.ACCT_KEY
 
 where s.CELL_CODE is not null
-  and s.CONTROL_FLAG = 'N'   /* test only - holdout control accounts are not sent */
+  and s.HOLDOUT_FLAG = 'N'   /* test only - holdout control accounts are not sent */
 
 
 /* ==========================================================================
@@ -225,7 +225,7 @@ select sp.ACCT_KEY
              when isNull(acac.HBO,'N') = 'Y' or isNull(acac.HBO_PAID,'N') = 'Y' then '05. Excluded: Current HBO subscriber'
              when isNull(acac.BASE_PCKG,'') like 'PREMIER%' or isNull(acac.BASE_PCKG,'') like 'LO%MAXIMO%' then '06. Excluded: Base package is Premier or Lo Maximo'
              when d.EMAIL_RECORD_RANK > 1 then '07. Excluded: Email address shared across multiple accounts. Deduped to the most recently activated account'
-             when sg.CONTROL_FLAG = 'Y' then '08. Excluded: Holdout control group (HBO 3 Digit HOG_RD22HOG)'
+             when sg.HOLDOUT_FLAG = 'Y' then '08. Excluded: Holdout control group (HBO 3 Digit HOG_RD22HOG)'
              else 'ERROR: No Valid Reason'
        end REASON
 
