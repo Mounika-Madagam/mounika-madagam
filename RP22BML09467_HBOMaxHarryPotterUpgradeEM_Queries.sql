@@ -9,7 +9,7 @@
    STEP 1 - STARTING POINT
    Target DE : RP22BML09467_HBOMaxHarryPotterUpgradeEM_StartingPoint
    Data Action: Overwrite
-   Product pull (5 DEs) + HBO sub / Premier / LO Maximo exclusion
+   Product pull (5 product DEs) + viewership target DEs (5) + HBO sub / Premier / LO Maximo exclusion
    ========================================================================== */
 SELECT p.ACCT_KEY
      , p.ACCT_STS
@@ -29,7 +29,7 @@ FROM (
              , 'DTVI' AS INPUT_SOURCE
              , s.BAN, s.LST_ACCT_ACTVN_DT
         FROM [P_A_OV_EXC_StreamCustomer] s
-        WHERE s.<<< REPLACE: DTVi/BYOD field >>> = '<<< DTVi value >>>'
+        WHERE s.CUST_TYP = 'DTVI'
 
         UNION ALL
 
@@ -37,7 +37,7 @@ FROM (
              , 'BYOD' AS INPUT_SOURCE
              , s.BAN, s.LST_ACCT_ACTVN_DT
         FROM [P_A_OV_EXC_StreamCustomer] s
-        WHERE s.<<< REPLACE: DTVi/BYOD field >>> = '<<< BYOD value >>>'
+        WHERE s.CUST_TYP = 'BYOD'
 
         UNION ALL
 
@@ -48,19 +48,27 @@ FROM (
 
         UNION ALL
 
-        /* Genre Packs - one DE (GenreServiceCustomer), target = any of the 5 viewership flags;
-           split into the two genre cells (DTVi / BYOD)                    */
+        /* Genre Packs - one DE (GenreServiceCustomer); CUST_TYP splits the two genre cells */
         SELECT g.ACCT_KEY, g.ACCT_STS, g.CUST_TYP
-             , CASE WHEN g.<<< REPLACE: device field >>> = 'DTVI'
-                    THEN 'GENRE_DTVI' ELSE 'GENRE_BYOD' END AS INPUT_SOURCE
+             , CASE WHEN g.CUST_TYP = 'GENRE-DTVI' THEN 'GENRE_DTVI'
+                    ELSE 'GENRE_BYOD' END AS INPUT_SOURCE
              , g.BAN, g.LST_ACCT_ACTVN_DT
         FROM [P_A_OV_EXC_GenreServiceCustomer] g
-        WHERE ( g.VOFAVWR = 'Y'      /* Family Viewership        */
-             OR g.VOFNVWR = 'Y'      /* Fantasy Viewership       */
-             OR g.VOKIVWR = 'Y'      /* Kids Viewership          */
-             OR g.VOPCVWR = 'Y'      /* Pop Culture Viewership   */
-             OR g.VOSSVWR = 'Y' )    /* Scripted Series Viewership */
+        WHERE g.CUST_TYP IN ('GENRE-DTVI','GENRE-BYOD')
      ) p
+/* Target audience: must be in at least one of the 5 viewership DEs */
+JOIN (
+        SELECT ACCT_KEY FROM [<<< REPLACE: Family Viewership - VOFAVWR DE >>>]
+        UNION
+        SELECT ACCT_KEY FROM [<<< REPLACE: Fantasy Viewership - VOFNVWR DE >>>]
+        UNION
+        SELECT ACCT_KEY FROM [<<< REPLACE: Kids Viewership - VOKIVWR DE >>>]
+        UNION
+        SELECT ACCT_KEY FROM [<<< REPLACE: Pop Culture Viewership - VOPCVWR DE >>>]
+        UNION
+        SELECT ACCT_KEY FROM [<<< REPLACE: Scripted Series Viewership - VOSSVWR DE >>>]
+     ) v
+  ON p.ACCT_KEY = v.ACCT_KEY
 JOIN [P_A_EV_AGN_AllCustomers_AccountConfig] acac
   ON p.ACCT_KEY = acac.ACCT_KEY
 WHERE NOT ( isNull(acac.HBO,'N') = 'Y' OR isNull(acac.HBO_PAID,'N') = 'Y' )  /* exclude current HBO subs */
