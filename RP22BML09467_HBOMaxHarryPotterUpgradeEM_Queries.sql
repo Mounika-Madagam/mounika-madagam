@@ -210,6 +210,7 @@ join [RP22BML09467_HBOMaxHarryPotterUpgradeEM_CampaignDetails] cd on cd.INTAKE_I
 left join [P_A_EV_AGN_AllCustomers_Identity] aci on i.ACCT_KEY = aci.ACCT_KEY
 
 where s.CELL_CODE is not null
+  and s.CONTROL_FLAG = 'N'   /* test only - holdout control accounts are not sent */
 
 
 /* ==========================================================================
@@ -223,6 +224,7 @@ select sp.ACCT_KEY
              when onb.ACCT_KEY is not null then '03. Excluded: Account is still within the Onboarding period'
              when ex.ACCT_KEY is not null then '04. Excluded: Account in MDU & Employees'
              when d.EMAIL_RECORD_RANK > 1 then '05. Excluded: Email address shared across multiple accounts. Deduped to the most recently activated account'
+             when sg.CONTROL_FLAG = 'Y' then '06. Excluded: Holdout control group (HBO 3 Digit HOG_RD22HOG)'
              else 'ERROR: No Valid Reason'
        end REASON
 
@@ -235,11 +237,13 @@ left join [P_A_OV_AGN_MarketingExclusions] ex on sp.ACCT_KEY = ex.ACCT_KEY
 
 left join [RP22BML09467_HBOMaxHarryPotterUpgradeEM_Duplicates] d on sp.ACCT_KEY = d.ACCT_KEY and sp.INPUT_SOURCE = d.INPUT_SOURCE
 
+left join [RP22BML09467_HBOMaxHarryPotterUpgradeEM_Segments] sg on sp.ACCT_KEY = sg.ACCT_KEY and sp.INPUT_SOURCE = sg.INPUT_SOURCE
+
 left join [RP22BML09467_HBOMaxHarryPotterUpgradeEM_Output] o on sp.ACCT_KEY = o.ACCT_KEY
 
 
 /* ==========================================================================
-   STEP 7 - WATERFALL (unchanged from clone)
+   STEP 7 - WATERFALL (clone + 06 holdout control row)
    Target DE : RP22BML09467_HBOMaxHarryPotterUpgradeEM_Waterfall
    ========================================================================== */
 select '02. Excluded: Not Base marketing email eligible (no email, opt out, non-responder, etc.)' as REASON, 0 as RECORDS
@@ -249,6 +253,8 @@ UNION
 select '04. Excluded: Account in MDU & Employees' as REASON, 0 as RECORDS
 UNION
 select '05. Excluded: Email address shared across multiple accounts. Deduped to the most recently activated account' as REASON, 0 as RECORDS
+UNION
+select '06. Excluded: Holdout control group (HBO 3 Digit HOG_RD22HOG)' as REASON, 0 as RECORDS
 UNION
 select 'FINAL OUTPUT QUANTITY' as REASON, 0 as RECORDS
 UNION
