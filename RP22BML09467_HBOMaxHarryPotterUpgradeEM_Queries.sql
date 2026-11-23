@@ -1,15 +1,15 @@
 /* ==========================================================================
    RP22BML09467 - HBO Max Harry Potter Upgrade (Email)
-   Targets: Satellite (DTVSAT), DTVi, BYOD, U-verse, Genre Packs
-   All DE names filled in. Assumes the 5 viewership DEs and the HOG holdout DE carry ACCT_KEY.
+   Targeting (confirmed with campaign lead):
+     customer in ANY of the 5 products  AND  in AT LEAST ONE of the 5 viewership DEs
+   Steps: 1 StartingPoint | 2 Inclusion | 3 Duplicates | 4 Segments
+          5 Output | 6 Exclusion | 7 Waterfall
    ========================================================================== */
 
 
 /* ==========================================================================
-   STEP 1 - STARTING POINT
+   STEP 1 - STARTING POINT   (products + viewership targeting only)
    Target DE : RP22BML09467_HBOMaxHarryPotterUpgradeEM_StartingPoint
-   Data Action: Overwrite
-   Product pull (5 product DEs) + viewership target DEs (5) + HBO sub / Premier / LO Maximo exclusion
    ========================================================================== */
 SELECT p.ACCT_KEY
      , p.ACCT_STS
@@ -48,7 +48,6 @@ FROM (
 
         UNION ALL
 
-        /* Genre Packs - one DE (GenreServiceCustomer); CUST_TYP splits the two genre cells */
         SELECT g.ACCT_KEY, g.ACCT_STS, g.CUST_TYP
              , CASE WHEN g.CUST_TYP = 'GENRE-DTVI' THEN 'GENRE_DTVI'
                     ELSE 'GENRE_BYOD' END AS INPUT_SOURCE
@@ -69,55 +68,61 @@ JOIN (
         SELECT ACCT_KEY FROM [Scripted Series Viewership - VOSSVWR]
      ) v
   ON p.ACCT_KEY = v.ACCT_KEY
-JOIN [P_A_EV_AGN_AllCustomers_AccountConfig] acac
-  ON p.ACCT_KEY = acac.ACCT_KEY
-WHERE NOT ( isNull(acac.HBO,'N') = 'Y' OR isNull(acac.HBO_PAID,'N') = 'Y' )  /* exclude current HBO subs */
-  AND acac.BASE_PCKG NOT LIKE 'PREMIER%'                                       /* exclude Premier         */
-  AND acac.BASE_PCKG NOT LIKE 'LO%MAXIMO%'                                     /* exclude Lo Maximo       */
 
 
 /* ==========================================================================
-   STEP 2 - INCLUSION
+   STEP 2 - INCLUSION   (standard marketing + campaign-specific filters + holdout flag)
    Target DE : RP22BML09467_HBOMaxHarryPotterUpgradeEM_Inclusion
-   Data Action: Overwrite
-   Promotional - Revenue Marketing email eligibility (P_A_OV_EXC_EmailMarkElig_Revenue)
-   + mandatory marketing exclusions / onboarding (emp / MDU suppressed here)
    ========================================================================== */
 select i.ACCT_KEY
       ,i.INPUT_SOURCE
       ,e.PREF_EML_TXT
       ,i.LST_ACCT_ACTVN_DT
+      ,case when h.ACCT_KEY is not null then 'Y' else 'N' end as HOLDOUT_FLAG   /* in HBO 3 Digit HOG_RD22HOG */
       ,NewID() as RANDOM_ID
 
 from [RP22BML09467_HBOMaxHarryPotterUpgradeEM_StartingPoint] i
+
+/* Promotional - Revenue Marketing email eligible */
 join [P_A_OV_EXC_EmailMarkElig_Revenue] e
   on i.ACCT_KEY = e.ACCT_KEY
 
 /*Mandatory*/
-left join [P_A_OV_AGN_MarketingExclusions] ex
-  on i.ACCT_KEY = ex.ACCT_KEY
-
 left join [P_S_LO_EXC_Onboarding] onb
   on i.ACCT_KEY = onb.ACCT_KEY
 
-where ex.ACCT_KEY is null
-  and onb.ACCT_KEY is null
+left join [P_A_OV_AGN_MarketingExclusions] ex
+  on i.ACCT_KEY = ex.ACCT_KEY
+
+/*Campaign specific*/
+left join [P_A_EV_AGN_AllCustomers_AccountConfig] acac
+  on i.ACCT_KEY = acac.ACCT_KEY
+
+/*Holdout flag*/
+left join (select distinct ACCT_KEY from [HBO 3 Digit HOG_RD22HOG]) h
+  on i.ACCT_KEY = h.ACCT_KEY
+
+where onb.ACCT_KEY is null
+  and ex.ACCT_KEY is null
+  and not ( isNull(acac.HBO,'N') = 'Y' or isNull(acac.HBO_PAID,'N') = 'Y' )   /* exclude current HBO subs */
+  and isNull(acac.BASE_PCKG,'') not like 'PREMIER%'                           /* exclude Premier         */
+  and isNull(acac.BASE_PCKG,'') not like 'LO%MAXIMO%'                         /* exclude Lo Maximo       */
 
 
 /* ==========================================================================
    STEP 3 - DUPLICATES
    Target DE : RP22BML09467_HBOMaxHarryPotterUpgradeEM_Duplicates
-   Data Action: Overwrite
-   One account per email address (genre accounts win ties, then most recent)
+   One account per email: most recently activated wins
    ========================================================================== */
 SELECT i.ACCT_KEY
      , i.INPUT_SOURCE
      , i.PREF_EML_TXT
      , ROW_NUMBER() OVER (
            PARTITION BY i.PREF_EML_TXT
-           ORDER BY CASE WHEN i.INPUT_SOURCE LIKE 'GENRE%' THEN 0 ELSE 1 END
-                  , i.LST_ACCT_ACTVN_DT DESC
+           ORDER BY i.LST_ACCT_ACTVN_DT DESC
+                  , CASE WHEN i.INPUT_SOURCE LIKE 'GENRE%' THEN 0 ELSE 1 END
                   , i.ACCT_KEY
+                  , i.INPUT_SOURCE
        ) AS EMAIL_RECORD_RANK
 FROM [RP22BML09467_HBOMaxHarryPotterUpgradeEM_Inclusion] i
 
@@ -125,9 +130,7 @@ FROM [RP22BML09467_HBOMaxHarryPotterUpgradeEM_Inclusion] i
 /* ==========================================================================
    STEP 4 - SEGMENTS
    Target DE : RP22BML09467_HBOMaxHarryPotterUpgradeEM_Segments
-   Data Action: Overwrite
-   Control = HBO 3 Digit HOG_RD22HOG holdout; Test = everyone else
-   Cell codes per Cell Code Matrix
+   CONTROL_FLAG: Test = 'N', Control (holdout) = 'Y'
    ========================================================================== */
 SELECT
      U.ACCT_KEY
@@ -167,7 +170,7 @@ SELECT
 FROM (
         SELECT i.ACCT_KEY
               ,i.INPUT_SOURCE
-              ,CASE WHEN h.ACCT_KEY IS NOT NULL THEN 'Y' ELSE 'N' END AS CONTROL_FLAG   /* in HOG_RD22HOG = control */
+              ,i.HOLDOUT_FLAG AS CONTROL_FLAG
               ,'SFMC' AS VENDOR_CODE
               ,i.RANDOM_ID
               ,ntile(100) OVER (PARTITION BY i.Input_Source ORDER BY i.RANDOM_ID) AS PERCENTILE
@@ -175,16 +178,13 @@ FROM (
         JOIN [RP22BML09467_HBOMaxHarryPotterUpgradeEM_Duplicates] AS d   /* used to remove dups Data Extension */
           ON i.ACCT_KEY = d.ACCT_KEY
          AND i.INPUT_SOURCE = d.INPUT_SOURCE
-        LEFT JOIN [HBO 3 Digit HOG_RD22HOG] h
-          ON i.ACCT_KEY = h.ACCT_KEY
         WHERE d.EMAIL_RECORD_RANK = 1   /* limit to the "best" account per email to remove dups */
 ) AS U
 
 
 /* ==========================================================================
-   STEP 5 - OUTPUT
+   STEP 5 - OUTPUT   (test only - no control)
    Target DE : RP22BML09467_HBOMaxHarryPotterUpgradeEM_Output
-   Data Action: Overwrite
    ========================================================================== */
 select e.BAN
       ,i.PREF_EML_TXT EMAIL_ADDRESS
@@ -214,26 +214,31 @@ where s.CELL_CODE is not null
 
 
 /* ==========================================================================
-   STEP 6 - EXCLUSION (QC / waterfall detail)
+   STEP 6 - EXCLUSION   (mirror of Inclusion: mandatory first, then campaign-specific)
    Target DE : RP22BML09467_HBOMaxHarryPotterUpgradeEM_Exclusion
-   Data Action: Overwrite
    ========================================================================== */
 select sp.ACCT_KEY
-      ,case  when o.ACCT_KEY is not null then 'FINAL OUTPUT QUANTITY'
+      ,case  when o.ACCT_KEY is not null and sg.ACCT_KEY is not null then 'FINAL OUTPUT QUANTITY'
              when e.ACCT_KEY is null then '02. Excluded: Not Base marketing email eligible (no email, opt out, non-responder, etc.)'
              when onb.ACCT_KEY is not null then '03. Excluded: Account is still within the Onboarding period'
              when ex.ACCT_KEY is not null then '04. Excluded: Account in MDU & Employees'
-             when d.EMAIL_RECORD_RANK > 1 then '05. Excluded: Email address shared across multiple accounts. Deduped to the most recently activated account'
-             when sg.CONTROL_FLAG = 'Y' then '06. Excluded: Holdout control group (HBO 3 Digit HOG_RD22HOG)'
+             when isNull(acac.HBO,'N') = 'Y' or isNull(acac.HBO_PAID,'N') = 'Y' then '05. Excluded: Current HBO subscriber'
+             when isNull(acac.BASE_PCKG,'') like 'PREMIER%' or isNull(acac.BASE_PCKG,'') like 'LO%MAXIMO%' then '06. Excluded: Base package is Premier or Lo Maximo'
+             when d.EMAIL_RECORD_RANK > 1 then '07. Excluded: Email address shared across multiple accounts. Deduped to the most recently activated account'
+             when sg.CONTROL_FLAG = 'Y' then '08. Excluded: Holdout control group (HBO 3 Digit HOG_RD22HOG)'
              else 'ERROR: No Valid Reason'
        end REASON
 
 from [RP22BML09467_HBOMaxHarryPotterUpgradeEM_StartingPoint] sp
 left join [P_A_OV_EXC_EmailMarkElig_Revenue] e on sp.ACCT_KEY = e.ACCT_KEY
 
+/*Mandatory*/
 left join [P_S_LO_EXC_Onboarding] onb on sp.ACCT_KEY = onb.ACCT_KEY
 
 left join [P_A_OV_AGN_MarketingExclusions] ex on sp.ACCT_KEY = ex.ACCT_KEY
+
+/*Campaign specific*/
+left join [P_A_EV_AGN_AllCustomers_AccountConfig] acac on sp.ACCT_KEY = acac.ACCT_KEY
 
 left join [RP22BML09467_HBOMaxHarryPotterUpgradeEM_Duplicates] d on sp.ACCT_KEY = d.ACCT_KEY and sp.INPUT_SOURCE = d.INPUT_SOURCE
 
@@ -243,7 +248,7 @@ left join [RP22BML09467_HBOMaxHarryPotterUpgradeEM_Output] o on sp.ACCT_KEY = o.
 
 
 /* ==========================================================================
-   STEP 7 - WATERFALL (clone + 06 holdout control row)
+   STEP 7 - WATERFALL
    Target DE : RP22BML09467_HBOMaxHarryPotterUpgradeEM_Waterfall
    ========================================================================== */
 select '02. Excluded: Not Base marketing email eligible (no email, opt out, non-responder, etc.)' as REASON, 0 as RECORDS
@@ -252,9 +257,13 @@ select '03. Excluded: Account is still within the Onboarding period' as REASON, 
 UNION
 select '04. Excluded: Account in MDU & Employees' as REASON, 0 as RECORDS
 UNION
-select '05. Excluded: Email address shared across multiple accounts. Deduped to the most recently activated account' as REASON, 0 as RECORDS
+select '05. Excluded: Current HBO subscriber' as REASON, 0 as RECORDS
 UNION
-select '06. Excluded: Holdout control group (HBO 3 Digit HOG_RD22HOG)' as REASON, 0 as RECORDS
+select '06. Excluded: Base package is Premier or Lo Maximo' as REASON, 0 as RECORDS
+UNION
+select '07. Excluded: Email address shared across multiple accounts. Deduped to the most recently activated account' as REASON, 0 as RECORDS
+UNION
+select '08. Excluded: Holdout control group (HBO 3 Digit HOG_RD22HOG)' as REASON, 0 as RECORDS
 UNION
 select 'FINAL OUTPUT QUANTITY' as REASON, 0 as RECORDS
 UNION
