@@ -1,7 +1,7 @@
 /* ==========================================================================
    RP22BML09467 - HBO Max Harry Potter Upgrade (Email)
    Targets: Satellite (DTVSAT), DTVi, BYOD, U-verse, Genre Packs
-   Placeholders to replace are marked  <<< REPLACE >>>
+   All DE names filled in. Assumes the 5 viewership DEs and the HOG holdout DE carry ACCT_KEY.
    ========================================================================== */
 
 
@@ -58,15 +58,15 @@ FROM (
      ) p
 /* Target audience: must be in at least one of the 5 viewership DEs */
 JOIN (
-        SELECT ACCT_KEY FROM [<<< REPLACE: Family Viewership - VOFAVWR DE >>>]
+        SELECT ACCT_KEY FROM [Family Viewership - VOFAVWR]
         UNION
-        SELECT ACCT_KEY FROM [<<< REPLACE: Fantasy Viewership - VOFNVWR DE >>>]
+        SELECT ACCT_KEY FROM [Fantasy Viewership - VOFNVWR]
         UNION
-        SELECT ACCT_KEY FROM [<<< REPLACE: Kids Viewership - VOKIVWR DE >>>]
+        SELECT ACCT_KEY FROM [Kids Viewership - VOKIVWR]
         UNION
-        SELECT ACCT_KEY FROM [<<< REPLACE: Pop Culture Viewership - VOPCVWR DE >>>]
+        SELECT ACCT_KEY FROM [Pop Culture Viewership - VOPCVWR]
         UNION
-        SELECT ACCT_KEY FROM [<<< REPLACE: Scripted Series Viewership - VOSSVWR DE >>>]
+        SELECT ACCT_KEY FROM [Scripted Series Viewership - VOSSVWR]
      ) v
   ON p.ACCT_KEY = v.ACCT_KEY
 JOIN [P_A_EV_AGN_AllCustomers_AccountConfig] acac
@@ -175,7 +175,7 @@ FROM (
         JOIN [RP22BML09467_HBOMaxHarryPotterUpgradeEM_Duplicates] AS d   /* used to remove dups Data Extension */
           ON i.ACCT_KEY = d.ACCT_KEY
          AND i.INPUT_SOURCE = d.INPUT_SOURCE
-        LEFT JOIN [<<< REPLACE: HBO 3 Digit HOG_RD22HOG holdout DE >>>] h
+        LEFT JOIN [HBO 3 Digit HOG_RD22HOG] h
           ON i.ACCT_KEY = h.ACCT_KEY
         WHERE d.EMAIL_RECORD_RANK = 1   /* limit to the "best" account per email to remove dups */
 ) AS U
