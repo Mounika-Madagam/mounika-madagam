@@ -21,45 +21,47 @@ FROM (
         SELECT s.ACCT_KEY, s.ACCT_STS, s.CUST_TYP
              , 'DTVSAT' AS INPUT_SOURCE
              , s.BAN, s.LST_ACCT_ACTVN_DT
-        FROM [<<< REPLACE: Satellite product DE >>>] s
+        FROM [P_S_OV_EXC_SatelliteCustomer] s
 
         UNION ALL
 
         SELECT s.ACCT_KEY, s.ACCT_STS, s.CUST_TYP
              , 'DTVI' AS INPUT_SOURCE
              , s.BAN, s.LST_ACCT_ACTVN_DT
-        FROM [<<< REPLACE: Signature App with Device (DTVi) DE >>>] s
+        FROM [P_A_OV_EXC_StreamCustomer] s
+        WHERE s.<<< REPLACE: DTVi/BYOD field >>> = '<<< DTVi value >>>'
 
         UNION ALL
 
         SELECT s.ACCT_KEY, s.ACCT_STS, s.CUST_TYP
              , 'BYOD' AS INPUT_SOURCE
              , s.BAN, s.LST_ACCT_ACTVN_DT
-        FROM [<<< REPLACE: Signature App (BYOD) DE >>>] s
+        FROM [P_A_OV_EXC_StreamCustomer] s
+        WHERE s.<<< REPLACE: DTVi/BYOD field >>> = '<<< BYOD value >>>'
 
         UNION ALL
 
         SELECT s.ACCT_KEY, s.ACCT_STS, s.CUST_TYP
              , 'UVERSE' AS INPUT_SOURCE
              , s.BAN, s.LST_ACCT_ACTVN_DT
-        FROM [<<< REPLACE: U-verse DE >>>] s
+        FROM [P_U_OV_EXC_UverseCustomer] s
 
         UNION ALL
 
-        /* Genre Packs - one DE, target = any of the 5 viewership flags;
+        /* Genre Packs - one DE (GenreServiceCustomer), target = any of the 5 viewership flags;
            split into the two genre cells (DTVi / BYOD)                    */
         SELECT g.ACCT_KEY, g.ACCT_STS, g.CUST_TYP
              , CASE WHEN g.<<< REPLACE: device field >>> = 'DTVI'
                     THEN 'GENRE_DTVI' ELSE 'GENRE_BYOD' END AS INPUT_SOURCE
              , g.BAN, g.LST_ACCT_ACTVN_DT
-        FROM [<<< REPLACE: Genre Packs DE >>>] g
+        FROM [P_A_OV_EXC_GenreServiceCustomer] g
         WHERE ( g.VOFAVWR = 'Y'      /* Family Viewership        */
              OR g.VOFNVWR = 'Y'      /* Fantasy Viewership       */
              OR g.VOKIVWR = 'Y'      /* Kids Viewership          */
              OR g.VOPCVWR = 'Y'      /* Pop Culture Viewership   */
              OR g.VOSSVWR = 'Y' )    /* Scripted Series Viewership */
      ) p
-JOIN [<<< REPLACE: AllCustomers attributes DE (acac) >>>] acac
+JOIN [P_A_EV_AGN_AllCustomers_AccountConfig] acac
   ON p.ACCT_KEY = acac.ACCT_KEY
 WHERE NOT ( isNull(acac.HBO,'N') = 'Y' OR isNull(acac.HBO_PAID,'N') = 'Y' )  /* exclude current HBO subs */
   AND acac.BASE_PCKG NOT LIKE 'PREMIER%'                                       /* exclude Premier         */
@@ -70,7 +72,8 @@ WHERE NOT ( isNull(acac.HBO,'N') = 'Y' OR isNull(acac.HBO_PAID,'N') = 'Y' )  /* 
    STEP 2 - INCLUSION
    Target DE : RP22BML09467_HBOMaxHarryPotterUpgradeEM_Inclusion
    Data Action: Overwrite
-   Standard marketing requirements (mandatory) - emp / MDU suppressed here
+   Promotional - Revenue Marketing email eligibility (P_A_OV_EXC_EmailMarkElig_Revenue)
+   + mandatory marketing exclusions / onboarding (emp / MDU suppressed here)
    ========================================================================== */
 select i.ACCT_KEY
       ,i.INPUT_SOURCE
@@ -79,7 +82,7 @@ select i.ACCT_KEY
       ,NewID() as RANDOM_ID
 
 from [RP22BML09467_HBOMaxHarryPotterUpgradeEM_StartingPoint] i
-join [P_A_OV_EXC_EmailMarkElig_BaseMgmt] e
+join [P_A_OV_EXC_EmailMarkElig_Revenue] e
   on i.ACCT_KEY = e.ACCT_KEY
 
 /*Mandatory*/
@@ -194,7 +197,7 @@ select e.BAN
 
 from [RP22BML09467_HBOMaxHarryPotterUpgradeEM_Inclusion] i
 join [RP22BML09467_HBOMaxHarryPotterUpgradeEM_Segments] s on i.ACCT_KEY = s.ACCT_KEY and i.INPUT_SOURCE = s.INPUT_SOURCE
-join [P_A_OV_EXC_EmailMarkElig_BaseMgmt] e on i.ACCT_KEY = e.ACCT_KEY
+join [P_A_OV_EXC_EmailMarkElig_Revenue] e on i.ACCT_KEY = e.ACCT_KEY
 join [RP22BML09467_HBOMaxHarryPotterUpgradeEM_CampaignDetails] cd on cd.INTAKE_ID = 'RP22BML09467'
 left join [P_A_EV_AGN_AllCustomers_Identity] aci on i.ACCT_KEY = aci.ACCT_KEY
 
@@ -216,7 +219,7 @@ select sp.ACCT_KEY
        end REASON
 
 from [RP22BML09467_HBOMaxHarryPotterUpgradeEM_StartingPoint] sp
-left join [P_A_OV_EXC_EmailMarkElig_BaseMgmt] e on sp.ACCT_KEY = e.ACCT_KEY
+left join [P_A_OV_EXC_EmailMarkElig_Revenue] e on sp.ACCT_KEY = e.ACCT_KEY
 
 left join [P_S_LO_EXC_Onboarding] onb on sp.ACCT_KEY = onb.ACCT_KEY
 
