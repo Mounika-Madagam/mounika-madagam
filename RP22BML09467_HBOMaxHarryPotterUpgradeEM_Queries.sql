@@ -219,9 +219,9 @@ where s.CELL_CODE is not null
    ========================================================================== */
 select sp.ACCT_KEY
       ,case  when o.ACCT_KEY is not null and sg.ACCT_KEY is not null then 'FINAL OUTPUT QUANTITY'
-             when e.ACCT_KEY is null then '02. Excluded: Not Base marketing email eligible (no email, opt out, non-responder, etc.)'
+             when e.ACCT_KEY is null then '02. Excluded: Not Revenue marketing email eligible (no email, opt out, non-responder, etc.)'
              when onb.ACCT_KEY is not null then '03. Excluded: Account is still within the Onboarding period'
-             when ex.ACCT_KEY is not null then '04. Excluded: Account in MDU & Employees'
+             when ex.ACCT_KEY is not null then '04. Excluded: Account in Marketing Exlclusions'
              when isNull(acac.HBO,'N') = 'Y' or isNull(acac.HBO_PAID,'N') = 'Y' then '05. Excluded: Current HBO subscriber'
              when isNull(acac.BASE_PCKG,'') like 'PREMIER%' or isNull(acac.BASE_PCKG,'') like 'LO%MAXIMO%' then '06. Excluded: Base package is Premier or Lo Maximo'
              when d.EMAIL_RECORD_RANK > 1 then '07. Excluded: Email address shared across multiple accounts. Deduped to the most recently activated account'
@@ -251,11 +251,11 @@ left join [RP22BML09467_HBOMaxHarryPotterUpgradeEM_Output] o on sp.ACCT_KEY = o.
    STEP 7 - WATERFALL
    Target DE : RP22BML09467_HBOMaxHarryPotterUpgradeEM_Waterfall
    ========================================================================== */
-select '02. Excluded: Not Base marketing email eligible (no email, opt out, non-responder, etc.)' as REASON, 0 as RECORDS
+select '02. Excluded: Not Revenue marketing email eligible (no email, opt out, non-responder, etc.)' as REASON, 0 as RECORDS
 UNION
 select '03. Excluded: Account is still within the Onboarding period' as REASON, 0 as RECORDS
 UNION
-select '04. Excluded: Account in MDU & Employees' as REASON, 0 as RECORDS
+select '04. Excluded: Account in Marketing Exlclusions' as REASON, 0 as RECORDS
 UNION
 select '05. Excluded: Current HBO subscriber' as REASON, 0 as RECORDS
 UNION
